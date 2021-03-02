@@ -1,0 +1,68 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                    {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    {% from "_render_field.html" import render_field%}
+    <form action="{{ url_for('contact') }}" method="POST">
+        {{form.csrf_token}}
+
+        {% if session_name is none %}
+            {{ render_field(form.name) }}
+            {{ render_field(form.email) }}
+            {{ render_field(form.message) }}
+        {% else %}
+            {{ render_field(form.message) }}
+        {% endif %}
+
+        {{ form.submit(class="btn btn-success") }}
+
+    </form>
+        <!--
+        {{ form.name.label }}
+        {{ form.name(class='form-control') }}
+
+        {% if form.name.errors %}
+            <ul class="errors">
+                {% for name in form.name.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {{ form.email.label }}
+        {{ form.email(class='form-control') }}
+
+        {{ form.message.label }}
+        {{ form.message(class='form-control') }}
+        -->
+
+<!--
+        <p>
+            <label for="name"> Name </label>
+            <input class="form-control" type="text" name="name">
+        </p>
+        <p>
+            <label for="email"> Email </label>
+            <input class="form-control" type="text" name="email">
+        </p>
+        <p>
+            <label for="message"> Message </label>
+            <input class="form-control" type="text" name="message">
+        </p>
+        <p>
+            <input class="btn btn-primary" type="submit">
+        </p>
+-->
+
+
+{% endblock content %}

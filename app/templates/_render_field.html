@@ -1,0 +1,20 @@
+{% macro render_field(field) %}
+
+  <dt class="form-group">{{ field.label }}
+    <dd>
+        {{ field(cols=25) }}
+    </dd>
+
+    {% if field.errors %}
+        <dd>
+        <ul>
+            {% for error in field.errors %}
+                <li class="list-group-item-danger">
+                    {{ error }}
+                </li>
+            {% endfor %}
+        </ul>
+        </dd>
+    {% endif %}
+
+{% endmacro %}

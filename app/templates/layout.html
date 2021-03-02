@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="static/css/custom.css">
+
+
+    {% if title %}
+        <title> {{ title }}</title>
+    {% else %}
+        <title> Portfolio </title>
+    {% endif %}
+</head>
+<body>
+    <header>
+      <nav class="navbar navbar-expand-lg navbar-dark bg-success bg-gradient fixed-top">
+        <div class="container">
+          <a class="navbar-brand fs-4" href="/">Портфоліо</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse fs-5" id="navbarNavDropdown">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                      <a class="nav-link" aria-current="page" href="{{url_for('contact')}}">Контактна форма</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" aria-current="page" href="{{url_for('bio')}}">Біографія</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" aria-current="page" href="{{url_for('achievements')}}">Досягнення</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" aria-current="page" href="{{url_for('photo')}}">Фото</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" aria-current="page" href="{{url_for('about')}}">Про сторінку</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container">
+        <div class="card border-5 fs-5">
+            {% block content %}{% endblock %}
+        </div>
+
+    </main>
+
+    <footer class="bg-success bg-gradient fixed-bottom">
+        {% block footer %}
+            {% if footer_info %}
+                <table class="container table table-hover text-light">
+
+                    {% for key in footer_info %}
+                        <tr>
+                            <td><b>{{key}}</b></td>
+                            <td>{{ footer_info[key]}} </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% endif %}
+        {% endblock %}
+    </footer>
+
+
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+
+</body>
+</html>

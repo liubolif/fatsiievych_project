@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                    {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    {% from "_render_field.html" import render_field%}
+    <form action="{{ url_for('task') }}" method="POST">
+        {{form.csrf_token}}
+
+        {{ render_field(form.title) }}
+        {{ render_field(form.description) }}
+
+        {{ form.submit(class="btn btn-success") }}
+
+    </form>
+
+    <hr>
+    <h4>Cписок усіх доданих завдань:</h4>
+
+    {% for t in all_tasks %}
+    <dl>
+        <dt> <b><u>{{t.title | safe }}</u></b> </dt>
+        <dd class="px-2"> <i>{{t.description | safe }}</i> </dd>
+    </dl>
+    {% endfor %}
+
+
+{% endblock content %}

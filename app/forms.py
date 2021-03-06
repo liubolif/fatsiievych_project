@@ -18,3 +18,11 @@ class ContactForm(FlaskForm):
                                        message="Текстове повідомлення повинне містити від 2 до 200 символів!")]
                             )
     submit = SubmitField('Submit')
+
+
+class TaskForm(FlaskForm):
+    title = StringField('Title', validators=[])
+
+    description = TextAreaField('Description',
+                                validators=[DataRequired()])
+    submit = SubmitField('Submit')

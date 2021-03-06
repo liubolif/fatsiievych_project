@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
-
 from flask import Flask, render_template, url_for, request, redirect, flash, session
 from app import app
-from app.forms import ContactForm
+from app.forms import ContactForm, TaskForm
+from app.models import Task
+from app import db
 from datetime import datetime
 import os
 import sys
@@ -60,6 +61,39 @@ def photo():
     footer_info['time'] = datetime.now().strftime("%H:%M:%S")
     footer_info['user_agent'] = request.headers.get('User-Agent')
     return render_template('photo.html', title='Фото', footer_info=footer_info, makeLittle=False)
+
+
+@app.route("/task", methods=['POST', 'GET'])
+def task():
+    form = TaskForm()
+    print("++++++++")
+    # якщо користувач передає дані
+
+    all_tasks = Task.query.all()
+
+    if form.validate_on_submit():
+        # дістаємо дані із форм
+        title = form.title.data
+        description = form.description.data
+
+        new_task = Task(title=title, description=description)
+        print(new_task)
+        try:
+            db.session.add(new_task)
+            db.session.commit()
+            flash(f'Завдання успішно додане', 'success')
+        except:
+            db.session.rollback()
+            flash('Помилка db', 'danger')
+        # У РОУТІ ВИКОНУЄМО ВСІ І ПЕРЕДАЄМО ШАБЛОНУ, А ТАМ ПЕРЕБИРАЄМО ЦИКЛОМ
+
+        return redirect(url_for('task'))
+
+    elif request.method == 'POST':
+        flash('Щось пішло не так....', 'danger')
+        return redirect(url_for('task'))
+
+    return render_template('task.html', title='Завдання', form=form, all_tasks=all_tasks)
 
 
 @app.route("/contact", methods=['POST', 'GET'])

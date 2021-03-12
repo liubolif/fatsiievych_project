@@ -2,7 +2,29 @@
 
   <dt class="form-group">{{ field.label }}
     <dd>
-        {{ field(cols=25) }}
+        {{ field }}
+    </dd>
+
+    {% if field.errors %}
+        <dd>
+        <ul>
+            {% for error in field.errors %}
+                <li class="list-group-item-danger">
+                    {{ error }}
+                </li>
+            {% endfor %}
+        </ul>
+        </dd>
+    {% endif %}
+
+{% endmacro %}
+
+
+{% macro render_field_updater(field, v) %}
+
+  <dt class="form-group">{{ field.label }}
+    <dd>
+        {{ field(value=v) }}
     </dd>
 
     {% if field.errors %}

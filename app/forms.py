@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, SubmitField
-from wtforms.validators import DataRequired, Length, Email
+from wtforms import StringField, TextAreaField, SubmitField, DateTimeField, DateField, SelectField, BooleanField
+from wtforms.validators import DataRequired, Length, Email, Optional, ValidationError
 
 
 class ContactForm(FlaskForm):
@@ -21,8 +21,16 @@ class ContactForm(FlaskForm):
 
 
 class TaskForm(FlaskForm):
-    title = StringField('Title', validators=[])
+    title = StringField('Title', validators=[DataRequired()])
 
-    description = TextAreaField('Description',
-                                validators=[DataRequired()])
+    description = TextAreaField('Description', validators=[DataRequired()])
+
+    # created = DateTimeField('Created', format='%d-%m-%Y %H:%M:%S', validators=[])
+    # ValidationError(message="Введіть дату у форматі y-m-d")
+    created = DateField('Created', format='%Y-%m-%d', validators=[Optional()])
+
+    priority = SelectField('Priority', choices=[('low', 'low'), ('medium', 'medium'), ('high', 'high')])
+
+    is_done = BooleanField('Is done')
+
     submit = SubmitField('Submit')

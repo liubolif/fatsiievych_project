@@ -10,7 +10,6 @@ import os
 import sys
 import json
 
-
 # записуємо початкову інформацію для футера. Так як дані про час і юзер агента
 # (можуть переходити на різні сторінки сайту із різних браузерів) можуть динамічно змінюватись -
 # то ці дані ініціалізуємо перед відкриття власне самої сторінки
@@ -63,37 +62,105 @@ def photo():
     return render_template('photo.html', title='Фото', footer_info=footer_info, makeLittle=False)
 
 
-@app.route("/task", methods=['POST', 'GET'])
-def task():
-    form = TaskForm()
-    print("++++++++")
-    # якщо користувач передає дані
-
+@app.route("/task")
+def task_all():
+    print("task_all")
     all_tasks = Task.query.all()
+    return render_template('task_all.html', title='Завдання',  all_tasks=all_tasks)
+
+
+@app.route("/task/create", methods=['POST', 'GET'])
+def task_create():
+    form = TaskForm()
+    print("task_create")
 
     if form.validate_on_submit():
+        print("validate_on_submit")
+
         # дістаємо дані із форм
         title = form.title.data
         description = form.description.data
+        created = form.created.data
+        priority = form.priority.data
+        is_done = form.is_done.data
 
-        new_task = Task(title=title, description=description)
+        new_task = Task(title=title, description=description, created=created, priority=priority, is_done=is_done)
         print(new_task)
         try:
             db.session.add(new_task)
             db.session.commit()
-            flash(f'Завдання успішно додане', 'success')
+            flash(f'Завдання "{new_task.title}" успішно додане', 'success')
         except:
             db.session.rollback()
-            flash('Помилка db', 'danger')
-        # У РОУТІ ВИКОНУЄМО ВСІ І ПЕРЕДАЄМО ШАБЛОНУ, А ТАМ ПЕРЕБИРАЄМО ЦИКЛОМ
+            flash(f'Помилка під час запису завдання "{new_task.title}" до БД', 'danger')
 
-        return redirect(url_for('task'))
+        return redirect(url_for('task_all'))
 
     elif request.method == 'POST':
-        flash('Щось пішло не так....', 'danger')
-        return redirect(url_for('task'))
+        flash('Помилка під час валідації', 'danger')
+        return redirect(url_for('task_create'))
 
-    return render_template('task.html', title='Завдання', form=form, all_tasks=all_tasks)
+    return render_template('task_create.html', title='Завдання', form=form)
+
+
+@app.route("/task/<int:id>")
+def task_detail(id):
+    task = Task.query.get(id)
+    return render_template('task_detail.html', title='Завдання', task=task)
+
+
+@app.route("/task/<int:id>/delete", methods=['POST', 'GET'])
+def task_delete(id):
+    task = Task.query.get_or_404(id)
+    try:
+        db.session.delete(task)
+        db.session.commit()
+        flash(f'Завдання "{task.title}" видалено', 'warning')
+    except:
+        flash(f'Під час видалення завдання "{task.title}" трапилась помилка.', 'danger')
+    return redirect(url_for('task_all'))
+
+
+@app.route("/task/<int:id>/update", methods=['POST', 'GET'])
+def task_update(id):
+    form = TaskForm()
+    print("task_update")
+    # дістаємо необхідний об'єкт завдання для редагування
+    task = Task.query.get_or_404(id)
+
+    if request.method == 'GET':
+        form.title.data = task.title
+        form.description.data = task.description
+        form.created.data = task.created
+        form.priority.data = task.priority.name
+        form.is_done.data = task.is_done
+
+        return render_template('task_update.html', title='Завдання', form=form)
+
+    else:
+        if form.validate_on_submit():
+            print("task_update validate_on_submit")
+
+            # дістаємо дані із форм і відразу записуємо їх в БД
+            task.title = form.title.data
+            task.description = form.description.data
+            task.created = form.created.data
+            task.priority = form.priority.data
+            task.is_done = form.is_done.data
+
+            print(task)
+            try:
+                db.session.commit()
+                flash(f'Завдання "{task.title}" успішно змінене', 'info')
+            except:
+                db.session.rollback()
+                flash(f'Помилка під час запису завдання "{task.title}" до БД', 'danger')
+
+            return redirect(url_for('task_all'))
+
+        else:
+            flash('Помилка під час валідації.', 'danger')
+            return redirect(f'/task/{id}/update')
 
 
 @app.route("/contact", methods=['POST', 'GET'])

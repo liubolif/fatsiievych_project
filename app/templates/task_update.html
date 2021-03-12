@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block content %}
+{% from "_render_field.html" import render_field %}
+<h3> Оновлення завдання </h3>
+    <form method="POST">
+        {{form.csrf_token}}
+
+        {{ render_field(form.title) }}
+        {{ render_field(form.description) }}
+        {{ render_field(form.created) }}
+        {{ render_field(form.priority) }}
+        {{ render_field(form.is_done) }}
+
+        {{ form.submit(class="btn btn-success") }}
+    </form>
+{% endblock content %}

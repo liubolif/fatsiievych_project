@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+{% block content %}
+    {% from "_render_field.html" import render_field %}
+
+    <a href="/task/create" class="btn btn-success fs-5"> Створити нове завдання </a>
+    <hr>
+    <h4>Cписок усіх доданих завдань:</h4>
+
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th scope="col">title</th>
+          <th scope="col">priority</th>
+          <th scope="col">created</th>
+            <th scope="col">is_done</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for task in all_tasks %}
+            <tr>
+              <th><a href="/task/{{ task.id }}" class="link-dark"> {{ task.title }}</a></th>
+              <td>{{ task.priority.name }}</td>
+              <td>{{ task.created.strftime('%Y-%m-%d') | safe}}</td>
+                <td>{{ task.is_done }}</td>
+            </tr>
+        {% endfor %}
+
+      </tbody>
+    </table>
+{% endblock content %}

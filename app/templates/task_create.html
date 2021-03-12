@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+{% block content %}
+    {% from "_render_field.html" import render_field %}
+    <form action="{{ url_for('task_create') }}" method="POST">
+        {{form.csrf_token}}
+
+        {{ render_field(form.title) }}
+        {{ render_field(form.description) }}
+        {{ render_field(form.created) }}
+        {{ render_field(form.priority) }}
+        {{ render_field(form.is_done) }}
+
+        {{ form.submit(class="btn btn-success") }}
+
+    </form>
+
+    <hr>
+{% endblock content %}

@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+{% block content %}
+<h3> Профіль працівника </h3>
+  <table class="card">
+    <tr>
+        <td><b>ім'я:</b></td>
+      <td>{{ employee.name }}</td>
+    </tr>
+    <tr>
+      <td><b>к-сть виконаних завдань:</b></td>
+      <td>{{ employee.count_of_compltd_task }}</td>
+    </tr>
+    <tr>
+      <td><b>к-сть <span class="text-danger">не</span>виконаних завдань:</b></td>
+      <td>{{ tasks_count - employee.count_of_compltd_task }}</td>
+    </tr>
+  </table>
+
+  <br><hr>
+  <h3> Список завдань, доручених працівнику: </h3>
+
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th scope="col">title</th>
+          <th scope="col">priority</th>
+            <th scope="col">category</th>
+          <th scope="col">created</th>
+            <th scope="col">employee</th>
+            <th scope="col">is_done</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for task in all_tasks %}
+            <tr>
+              <th><a href="/task/{{ task.id }}" class="link-dark"> {{ task.title }}</a></th>
+              <td>{{ task.priority.name }}</td>
+                <td>{{ task.categor.name }}</td>
+              <td>{{ task.created.strftime('%Y-%m-%d') | safe}}</td>
+                <td>
+                    {% for t in task.for_empl %}
+                        <a href="/employee/{{ t.id }}" class="link-secondary"> {{ t.name }}</a><br>
+                    {% endfor %}
+
+                </td>
+                <td>{{ task.is_done }}</td>
+            </tr>
+        {% endfor %}
+
+      </tbody>
+    </table>
+
+{% endblock content %}

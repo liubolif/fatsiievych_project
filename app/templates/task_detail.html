@@ -19,9 +19,14 @@
       <td>{{ task.priority.name }}</td>
     </tr>
     <tr>
+      <td><b>категорія:</b></td>
+      <td>{{ task.categor.name }}</td>
+    </tr>
+    <tr>
       <td><b>виконано:</b></td>
       <td>{{ task.is_done }}</td>
     </tr>
+
   </table>
     <a href="/task/{{ task.id }}/delete" class="btn btn-danger fs-5"> Видалити </a>
     <a href="/task/{{ task.id }}/update" class="btn btn-info fs-5"> Змінити </a>

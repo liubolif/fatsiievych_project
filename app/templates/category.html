@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+{% block content %}
+    {% from "_render_field.html" import render_field %}
+
+    <h4>Cтворити категорію:</h4>
+    <br>
+    <form action="{{ url_for('category') }}" method="POST">
+        {{form.csrf_token}}
+
+        {{ render_field(form.name) }}
+
+        {{ form.submit(class="btn btn-success") }}
+    </form>
+
+    <br><hr><br>
+    <h4>Cписок усіх категорій:</h4>
+
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th scope="col">name</th>
+          <th scope="col">update</th>
+          <th scope="col">delete</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for categ in all_categories %}
+            <tr>
+                <th> <b class="fs-4">{{ categ.name }}</b> </th>
+                <td> <a href="/category/{{ categ.id }}/update" class="btn btn-info fs-5"> Змінити </a> </td>
+                <td> <a href="/category/{{ categ.id }}/delete" class="btn btn-danger fs-5"> Видалити </a> </td>
+            </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+{% endblock content %}

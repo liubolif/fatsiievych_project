@@ -4,7 +4,6 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from app.config import Config
 
-
 app = Flask(__name__)
 # app.config['SECRET_KEY'] = os.urandom(24)
 # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

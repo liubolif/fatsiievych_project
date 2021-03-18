@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block content %}
+    {% from "_render_field.html" import render_field %}
+
+    <h4>Редагування категорії:</h4>
+    <br>
+    <form method="POST">
+        {{form.csrf_token}}
+
+        {{ render_field(form.name) }}
+
+        {{ form.submit(class="btn btn-success") }}
+    </form>
+
+
+{% endblock content %}

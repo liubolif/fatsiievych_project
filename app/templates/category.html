@@ -28,8 +28,8 @@
         {% for categ in all_categories %}
             <tr>
                 <th> <b class="fs-4">{{ categ.name }}</b> </th>
-                <td> <a href="/category/{{ categ.id }}/update" class="btn btn-info fs-5"> Змінити </a> </td>
-                <td> <a href="/category/{{ categ.id }}/delete" class="btn btn-danger fs-5"> Видалити </a> </td>
+                <td> <a href="{{url_for('category_update', id=categ.id)}}" class="btn btn-info fs-5"> Змінити </a> </td>
+                <td> <a href="{{url_for('category_delete', id=categ.id)}}" class="btn btn-danger fs-5"> Видалити </a> </td>
             </tr>
         {% endfor %}
       </tbody>

@@ -12,4 +12,28 @@
         {{ form.submit(class="btn btn-success") }}
     </form>
 
+<hr>
+    <h4>Список всіх працівників:</h4>
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th scope="col">name</th>
+            <th scope="col">delete</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for e in employees %}
+        <tr>
+            <td>
+                <a href="{{url_for('employee_profile', id=e.id)}}" class="link-secondary"> {{ e.name }}</a>
+            </td>
+            <td>
+                <a href="{{url_for('employee_delete', id=e.id)}}" class="btn btn-danger btn-sm"> Видалити </a>
+            </td>
+       </tr>
+       {% endfor %}
+
+      </tbody>
+    </table>
 {% endblock content %}

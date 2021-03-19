@@ -1,8 +1,11 @@
 {% extends "layout.html" %}
 {% block content %}
     {% from "_render_field.html" import render_field %}
-    <a href="{{url_for('category')}}" class="btn btn-success fs-5"> Категорії </a>
-    <a href="{{url_for('employee_create')}}" class="btn btn-success fs-5"> Додати працівника </a>
+
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+        <a href="{{url_for('category')}}" class="btn btn-success btn-lg fs-5"> Категорії </a>
+        <a href="{{url_for('employee_create')}}" class="btn btn-success btn-lg fs-5"> Працівники </a>
+    </div>
     <hr>
     <a href="/task/create" class="btn btn-success fs-5"> Створити нове завдання </a>
 
@@ -31,7 +34,7 @@
               <td>{{ task.created.strftime('%Y-%m-%d') | safe}}</td>
                 <td>
                     {% for t in task.for_empl %}
-                        <a href="/employee/{{ t.id }}" class="link-secondary"> {{ t.name }}</a><br>
+                        <a href="{{url_for('employee_profile', id=t.id)}}" class="link-secondary"> {{ t.name }}</a><br>
                     {% endfor %}
 
                 </td>

@@ -23,11 +23,19 @@
       <td>{{ task.categor.name }}</td>
     </tr>
     <tr>
+      <td><b>виконавці:</b></td>
+      <td>
+        {% for t in task.for_empl %}
+          <a href="{{url_for('employee_profile', id=t.id)}}" class="link-secondary"> {{ t.name }}</a><br>
+        {% endfor %}
+      </td>
+    </tr>
+    <tr>
       <td><b>виконано:</b></td>
       <td>{{ task.is_done }}</td>
     </tr>
 
   </table>
-    <a href="/task/{{ task.id }}/delete" class="btn btn-danger fs-5"> Видалити </a>
-    <a href="/task/{{ task.id }}/update" class="btn btn-info fs-5"> Змінити </a>
+    <a href="{{url_for('task_delete', id=task.id)}}" class="btn btn-danger fs-5"> Видалити </a>
+    <a href="{{url_for('task_update', id=task.id)}}" class="btn btn-info fs-5"> Змінити </a>
 {% endblock content %}

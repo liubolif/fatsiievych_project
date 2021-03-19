@@ -25,8 +25,6 @@ class Task(db.Model):
     priority = db.Column(db.Enum(EnumPriority), default='low')
     is_done = db.Column(db.Boolean, default=False)
 
-    is_perfect = db.Column(db.Boolean, default=True)
-
     category_id = db.Column(db.Integer(), db.ForeignKey('category.id'))
 
     def __repr__(self):

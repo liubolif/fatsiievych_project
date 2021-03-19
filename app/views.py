@@ -172,7 +172,7 @@ def task_update(id):
             category_name = form.category.data
             task.categor = Category.query.get_or_404(category_name)
             employee_list = form.employee.data
-            task.for_empl.clear() # очищаємо всі існуючі вязаємозвязки перед новим записом
+            task.for_empl.clear()  # очищаємо всі існуючі вязаємозвязки перед новим записом
             for empl in employee_list:
                 task.for_empl.append(Employee.query.get(int(empl)))
             task.is_done = form.is_done.data
@@ -212,7 +212,8 @@ def employee_profile(id):
     except:
         pass
 
-    return render_template('employee_profile.html', title='Профіль працівника', employee=employee, all_tasks=all_tasks, tasks_count=all_tasks.count())
+    return render_template('employee_profile.html', title='Профіль працівника', employee=employee, all_tasks=all_tasks,
+                           tasks_count=all_tasks.count())
 
 
 @app.route("/employee/create", methods=['POST', 'GET'])
@@ -221,6 +222,7 @@ def employee_create():
 
     form = EmployeeForm()
 
+    employees = Employee.query.all()
     if request.method == 'POST':
         if form.validate_on_submit():
             name = form.name.data
@@ -237,9 +239,20 @@ def employee_create():
 
             return redirect(url_for('task_all'))
 
-    return render_template('employee_create.html', title='Додавання новго працівника', form=form)
+    return render_template('employee_create.html', title='Додавання новго працівника', form=form, employees=employees)
 
 
+@app.route("/employee/<int:id>/delete", methods=['POST', 'GET'])
+def employee_delete(id):
+    print("employee_delete")
+    empl = Employee.query.get_or_404(id)
+    try:
+        db.session.delete(empl)
+        db.session.commit()
+        flash(f'Працівника "{empl.name}" видалено', 'warning')
+    except:
+        flash(f'Під час видалення працівника "{empl.name}" трапилась помилка.', 'danger')
+    return redirect(url_for('task_all'))
 
 
 @app.route("/category", methods=['POST', 'GET'])

@@ -6,7 +6,7 @@ from sqlalchemy import case
 from app import app
 from app.forms import *
 from app.models import *
-from app import db
+from app import db, bcrypt
 from datetime import datetime
 import os
 import sys
@@ -86,12 +86,12 @@ def task_create():
         description = form.description.data
         created = form.created.data
         priority = form.priority.data
-        category_name = form.category.data
+        category_id = form.category.data
         employee_list = form.employee.data
         is_done = form.is_done.data
 
         try:
-            category_obj = Category.query.get_or_404(category_name)
+            category_obj = Category.query.get_or_404(category_id)
             new_task = Task(title=title, description=description, created=created, priority=priority,
                             categor=category_obj, is_done=is_done)
             print(new_task)
@@ -223,21 +223,21 @@ def employee_create():
     form = EmployeeForm()
 
     employees = Employee.query.all()
-    if request.method == 'POST':
-        if form.validate_on_submit():
-            name = form.name.data
 
-            new_empl = Employee(name=name)
-            print(new_empl)
-            try:
-                db.session.add(new_empl)
-                db.session.commit()
-                flash(f'Працівника "{new_empl.name}" успішно додано', 'success')
-            except:
-                db.session.rollback()
-                flash(f'Помилка під час запису працівника "{new_empl.name}" до БД', 'danger')
+    if form.validate_on_submit():
+        name = form.name.data
 
-            return redirect(url_for('task_all'))
+        new_empl = Employee(name=name)
+        print(new_empl)
+        try:
+            db.session.add(new_empl)
+            db.session.commit()
+            flash(f'Працівника "{new_empl.name}" успішно додано', 'success')
+        except:
+            db.session.rollback()
+            flash(f'Помилка під час запису працівника "{new_empl.name}" до БД', 'danger')
+
+        return redirect(url_for('task_all'))
 
     return render_template('employee_create.html', title='Додавання новго працівника', form=form, employees=employees)
 
@@ -263,22 +263,21 @@ def category():
 
     form = CategoryForm()
 
-    if request.method == 'POST':
-        if form.validate_on_submit():
-            name = form.name.data
-            print('category name =', name)
-            new_categ = Category(name=name)
-            print(new_categ)
-            try:
-                db.session.add(new_categ)
-                db.session.commit()
-                flash(f'Категорію "{new_categ.name}" успішно додано', 'success')
-            except:
-                db.session.rollback()
-                flash(f'Помилка під час запису категорії "{new_categ.name}" до БД\n '
-                      f'Можливо ви ввели ввели вже існуючу назву завдання', 'danger')
+    if form.validate_on_submit():
+        name = form.name.data
+        print('category name =', name)
+        new_categ = Category(name=name)
+        print(new_categ)
+        try:
+            db.session.add(new_categ)
+            db.session.commit()
+            flash(f'Категорію "{new_categ.name}" успішно додано', 'success')
+        except:
+            db.session.rollback()
+            flash(f'Помилка під час запису категорії "{new_categ.name}" до БД\n '
+                  f'Можливо ви ввели ввели вже існуючу назву завдання', 'danger')
 
-            return redirect(url_for('category'))
+        return redirect(url_for('category'))
 
     return render_template('category.html', title='Категорії', form=form, all_categories=all_categories)
 
@@ -325,9 +324,46 @@ def category_update(id):
 
             return redirect(url_for('category'))
 
+        flash('Помилка під час валідації.', 'danger')
+        return redirect({{url_for('category_update', id=id)}})
+
+
+@app.route("/register", methods=['GET', 'POST'])
+def register():
+    print('register')
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        # hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        print(form.username.data, form.email.data, form.password.data)
+        user = User(username=form.username.data, email=form.email.data, password=form.password.data)
+        try:
+            db.session.add(user)
+            db.session.commit()
+            flash(f'Користувач {form.username.data} успішно зареєстрований!', 'success')
+        except:
+            db.session.rollback()
+            flash(f'Помилка під час запису користувача до БД', 'danger')
+        return redirect(url_for('login'))
+    return render_template('register.html', title='Register', form=form)
+
+
+@app.route("/login", methods=['GET', 'POST'])
+def login():
+    print('login')
+    form = LoginForm()
+    if form.validate_on_submit():
+        print(form.email.data, form.password.data)
+        user = User.query.filter_by(email=form.email.data).first()
+        if user:
+            if bcrypt.check_password_hash(user.password, form.password.data):
+                flash(f'Користувач успішно увійшов у свій аккаунт!', 'success')
+                return redirect(url_for('task_all'))
+            else:
+                flash('Введено невірний пароль.', 'danger')
+                return redirect(url_for('login'))
         else:
-            flash('Помилка під час валідації.', 'danger')
-            return redirect(f'/category/{id}/update')
+            flash('Користувача із вказаним емейлом не існує в базі даних.', 'danger')
+    return render_template('login.html', title='Login', form=form)
 
 
 @app.route("/contact", methods=['POST', 'GET'])

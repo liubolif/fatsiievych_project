@@ -20,6 +20,36 @@
 {% endmacro %}
 
 
+{% macro render_field_lr(field) %}
+
+    <div class="form-group">
+        <div class="form-control-label">
+            {{ field.label }}
+        </div>
+
+        {% if field.errors %}
+            <div class="form-control form-control-lg is-invalid">
+                {{ field }}
+            </div>
+
+            <div class="invalid-feedback">
+                {% for error in field.errors %}
+                    <span>{{ error }}</span>
+                {% endfor %}
+            </div>
+         {% else %}
+            <div class="form-control form-control-lg ">
+                {{ field }}
+            </div>
+        {% endif %}
+    </div>
+{% endmacro %}
+
+
+
+
+
+
 {% macro render_field_updater(field, v) %}
 
   <dt class="form-group">{{ field.label }}

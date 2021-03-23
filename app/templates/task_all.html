@@ -28,7 +28,7 @@
       <tbody>
         {% for task in all_tasks %}
             <tr>
-              <th><a href="/task/{{ task.id }}" class="link-dark"> {{ task.title }}</a></th>
+              <th><a href="{{url_for('task_detail', id=task.id)}}" class="link-dark"> {{ task.title }}</a></th>
               <td>{{ task.priority.name }}</td>
                 <td>{{ task.categor.name }}</td>
               <td>{{ task.created.strftime('%Y-%m-%d') | safe}}</td>

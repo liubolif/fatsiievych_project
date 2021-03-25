@@ -1,5 +1,6 @@
 from datetime import datetime
-from app import db, bcrypt
+from app import db, bcrypt, login_manager
+from flask_login import UserMixin
 import enum
 from datetime import datetime
 
@@ -53,7 +54,12 @@ class Employee(db.Model):  # many to many з Tasks
         return f"Employee('{self.id}', '{self.name}', '{self.count_of_compltd_task}')\n"
 
 
-class User(db.Model):
+@login_manager.user_loader
+def user_loader(user_id):
+    return User.query.get(int(user_id))
+
+
+class User(db.Model, UserMixin):
     def __init__(self, username, email, password):
         self.username = username
         self.email = email
@@ -63,6 +69,18 @@ class User(db.Model):
     username = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
+
+    # def is_authenticated(self):
+    #     return True
+    #
+    # def is_active(self):
+    #     return True
+    #
+    # def is_anonymous(self):
+    #     return True
+    #
+    # def get_id(self):
+    #     return self.id
 
     def __repr__(self):
         return f"User('{self.id}','{self.username}', '{self.email}', '{self.password}')"

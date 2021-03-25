@@ -2,6 +2,7 @@
 
 from flask import Flask, render_template, url_for, request, redirect, flash, session
 from sqlalchemy import case
+from flask_login import login_user, current_user, logout_user, login_required
 
 from app import app
 from app.forms import *
@@ -331,6 +332,8 @@ def category_update(id):
 @app.route("/register", methods=['GET', 'POST'])
 def register():
     print('register')
+    if current_user.is_authenticated:
+        return redirect(url_for('about'))
     form = RegistrationForm()
     if form.validate_on_submit():
         # hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
@@ -350,20 +353,30 @@ def register():
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     print('login')
+    if current_user.is_authenticated:
+        return redirect(url_for('about'))
     form = LoginForm()
     if form.validate_on_submit():
         print(form.email.data, form.password.data)
         user = User.query.filter_by(email=form.email.data).first()
         if user:
             if bcrypt.check_password_hash(user.password, form.password.data):
+                login_user(user, remember=form.remember.data)
                 flash(f'Користувач успішно увійшов у свій аккаунт!', 'success')
-                return redirect(url_for('task_all'))
+                return redirect(url_for('about'))
             else:
                 flash('Введено невірний пароль.', 'danger')
                 return redirect(url_for('login'))
         else:
             flash('Користувача із вказаним емейлом не існує в базі даних.', 'danger')
     return render_template('login.html', title='Login', form=form)
+
+
+@app.route("/logout")
+def logout():
+    logout_user()
+    flash(f'Користувач вийшов із системи!', 'info')
+    return redirect(url_for('about'))
 
 
 @app.route("/contact", methods=['POST', 'GET'])
@@ -410,3 +423,9 @@ def contact():
             else:
                 flash('Деякі поля не пройшли валідацію, будь ласка, введіть дані ще раз', 'danger')
     return render_template('contact.html', title='Контактна форма', form=form, session_name=session_name)
+
+
+@app.route("/account")
+@login_required
+def account():
+    return render_template('account.html', title='Account')

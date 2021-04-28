@@ -1,5 +1,39 @@
 {% extends "layout.html" %}
 {% block content %}
-    <h1>{{ current_user.username }}</h1>
-{% endblock content %}
+    {% from "_render_field.html" import render_field_lr %}
 
+    <div class="content-section">
+        <div class="card">
+             <div class="media">
+                  <img src="{{ image_file }}" class="rounded-circle account-img">
+                  <div class="card-body">
+                    <h5 class="account-heading">{{ current_user.username }}</h5>
+                    <p class="blockquote-footer">{{ current_user.about_me }}</p>
+                  </div>
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item text-dark"><em>{{ current_user.email }}</em></li>
+                    <li class="list-group-item text-dark"><mark>{{ current_user.last_time_seen.isoformat(' ', 'seconds') }}</mark></li>
+                      <li class="list-group-item text-dark"><mark>{{ current_user.password }}</mark></li>
+                  </ul>
+             </div>
+        </div>
+
+        <form method="POST" action="{{ url_for('account') }}" enctype="multipart/form-data">
+            {{form.csrf_token}}
+
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Edit info</legend>
+                    {{ render_field_lr(form.username) }}
+                    {{ render_field_lr(form.email) }}
+                    {{ render_field_lr(form.about_me) }}
+                    {{ render_field_lr(form.picture) }}
+            </fieldset>
+
+            <div class="form-group">
+                {{ form.submit(class="btn btn-outline-info btn-lg") }}
+            </div>
+
+        </form>
+             <hr><a href="{{url_for('change_password')}}" class="btn btn-info fs-5"> Змінити пароль </a>
+    </div>
+{% endblock content %}

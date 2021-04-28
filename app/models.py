@@ -54,33 +54,36 @@ class Employee(db.Model):  # many to many з Tasks
         return f"Employee('{self.id}', '{self.name}', '{self.count_of_compltd_task}')\n"
 
 
+# This callback is used to reload the user object from the user ID stored in the session.
 @login_manager.user_loader
 def user_loader(user_id):
     return User.query.get(int(user_id))
 
 
 class User(db.Model, UserMixin):
+
     def __init__(self, username, email, password):
         self.username = username
         self.email = email
-        self.password = bcrypt.generate_password_hash(password)
+        self.password = bcrypt.generate_password_hash(password).decode('utf-8')
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
-
-    # def is_authenticated(self):
-    #     return True
-    #
-    # def is_active(self):
-    #     return True
-    #
-    # def is_anonymous(self):
-    #     return True
-    #
-    # def get_id(self):
-    #     return self.id
+    about_me = db.Column(db.Text, nullable=True)
+    image_file = db.Column(db.String(20), nullable=False, server_default='default.png')
+    last_time_seen = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __repr__(self):
-        return f"User('{self.id}','{self.username}', '{self.email}', '{self.password}')"
+        return f"User('{self.id}','{self.username}', '{self.email}', '{self.password}', '{self.last_seen}')"
+
+
+class Image(db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(20), unique=True, nullable=False)
+    logo = db.Column(db.LargeBinary, nullable=True)
+
+    def __repr__(self):
+        return f"Image('{self.id}', '{self.username}')"

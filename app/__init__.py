@@ -13,13 +13,13 @@ app.config.from_object(Config)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
-login_manager.login_message_category = 'warning'
+login_manager.login_message = "Будь ласка, авторизуйтеся, щоб мати доступ до цієї сторінки"
+login_manager.login_message_category = 'info'
 db = SQLAlchemy(app)
 
 # app.config['SECRET_KEY'] = os.urandom(24)
 # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
-
 
 
 from app import views

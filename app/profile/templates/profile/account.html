@@ -13,12 +13,11 @@
                   <ul class="list-group list-group-flush">
                     <li class="list-group-item text-dark"><em>{{ current_user.email }}</em></li>
                     <li class="list-group-item text-dark"><mark>{{ current_user.last_time_seen.isoformat(' ', 'seconds') }}</mark></li>
-                      <li class="list-group-item text-dark"><mark>{{ current_user.password }}</mark></li>
                   </ul>
              </div>
         </div>
 
-        <form method="POST" action="{{ url_for('account') }}" enctype="multipart/form-data">
+        <form method="POST" action="{{ url_for('user_bp_in.account') }}" enctype="multipart/form-data">
             {{form.csrf_token}}
 
             <fieldset class="form-group">
@@ -34,6 +33,6 @@
             </div>
 
         </form>
-             <hr><a href="{{url_for('change_password')}}" class="btn btn-info fs-5"> Змінити пароль </a>
+             <hr><a href="{{url_for('user_bp_in.change_password')}}" class="btn btn-info fs-5"> Змінити пароль </a>
     </div>
 {% endblock content %}

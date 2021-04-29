@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block content %}
     {% from "_render_field.html" import render_field %}
-    <form action="{{ url_for('task_create') }}" method="POST">
+    <form action="{{ url_for('task_bp_in.task_create') }}" method="POST">
         {{form.csrf_token}}
 
         {{ render_field(form.title) }}

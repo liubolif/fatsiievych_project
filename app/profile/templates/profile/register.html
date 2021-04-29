@@ -3,11 +3,11 @@
     {% from "_render_field.html" import render_field_lr %}
     <div class="content-section">
 
-        <form method="POST" action="{{ url_for('register') }}">
+        <form method="POST" action="{{ url_for('user_bp_in.register') }}">
             {{form.csrf_token}}
 
             <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Зареєструватись</legend>
+                <legend class="border-bottom mb-4">Sign up</legend>
                     {{ render_field_lr(form.username) }}
                     {{ render_field_lr(form.email) }}
                     {{ render_field_lr(form.password) }}

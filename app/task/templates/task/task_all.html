@@ -3,11 +3,11 @@
     {% from "_render_field.html" import render_field %}
 
     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-        <a href="{{url_for('category')}}" class="btn btn-success btn-lg fs-5"> Категорії </a>
-        <a href="{{url_for('employee_create')}}" class="btn btn-success btn-lg fs-5"> Працівники </a>
+        <a href="{{url_for('task_bp_in.category')}}" class="btn btn-success btn-lg fs-5"> Категорії </a>
+        <a href="{{url_for('task_bp_in.employee_create')}}" class="btn btn-success btn-lg fs-5"> Працівники </a>
     </div>
     <hr>
-    <a href="/task/create" class="btn btn-success fs-5"> Створити нове завдання </a>
+    <a href="{{url_for('task_bp_in.task_create')}}" class="btn btn-success fs-5"> Створити нове завдання </a>
 
 
     <hr>
@@ -28,13 +28,13 @@
       <tbody>
         {% for task in all_tasks %}
             <tr>
-              <th><a href="{{url_for('task_detail', id=task.id)}}" class="link-dark"> {{ task.title }}</a></th>
+              <th><a href="{{url_for('task_bp_in.task_detail', id=task.id)}}" class="link-dark"> {{ task.title }}</a></th>
               <td>{{ task.priority.name }}</td>
                 <td>{{ task.categor.name }}</td>
               <td>{{ task.created.strftime('%Y-%m-%d') | safe}}</td>
-                <td>
+                <td>task_bp_in.
                     {% for t in task.for_empl %}
-                        <a href="{{url_for('employee_profile', id=t.id)}}" class="link-secondary"> {{ t.name }}</a><br>
+                        <a href="{{url_for('task_bp_in.employee_profile', id=t.id)}}" class="link-secondary"> {{ t.name }}</a><br>
                     {% endfor %}
 
                 </td>

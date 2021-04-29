@@ -8,18 +8,35 @@ from flask_login import LoginManager
 
 app = Flask(__name__)
 
-app.config.from_object(Config)
-
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
-login_manager.login_view = 'login'
-login_manager.login_message = "Будь ласка, авторизуйтеся, щоб мати доступ до цієї сторінки"
+login_manager.login_view = 'user_bp_in.login'
+login_manager.login_message = "Please, sign in to have an access to the account"
 login_manager.login_message_category = 'info'
 db = SQLAlchemy(app)
 
-# app.config['SECRET_KEY'] = os.urandom(24)
-# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+
+def create_app(config_class=Config):
+    app = Flask(__name__, instance_relative_config=True)
+    with app.app_context():
+        app.config.from_object(Config)
+
+        db.init_app(app)
+        bcrypt.init_app(app)
+        login_manager.init_app(app)
+
+        from . import views
+        from .profile import user_bp
+        from .contact import contact_bp
+        from .task import task_bp
+
+        app.register_blueprint(user_bp, url_prefix='/usr')
+        app.register_blueprint(contact_bp, url_prefix='/cnt')
+        app.register_blueprint(task_bp, url_prefix='/tsk')
+
+    return app
 
 
-from app import views
+
+
+

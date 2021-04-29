@@ -4,7 +4,7 @@
 
     <h4>Додати нового працівника:</h4>
     <br>
-    <form action="{{ url_for('employee_create') }}" method="POST">
+    <form action="{{ url_for('task_bp_in.employee_create') }}" method="POST">
         {{form.csrf_token}}
 
         {{ render_field(form.name) }}
@@ -26,10 +26,10 @@
         {% for e in employees %}
         <tr>
             <td>
-                <a href="{{url_for('employee_profile', id=e.id)}}" class="link-secondary"> {{ e.name }}</a>
+                <a href="{{url_for('task_bp_in.employee_profile', id=e.id)}}" class="link-secondary"> {{ e.name }}</a>
             </td>
             <td>
-                <a href="{{url_for('employee_delete', id=e.id)}}" class="btn btn-danger btn-sm"> Видалити </a>
+                <a href="{{url_for('task_bp_in.employee_delete', id=e.id)}}" class="btn btn-danger btn-sm"> Видалити </a>
             </td>
        </tr>
        {% endfor %}

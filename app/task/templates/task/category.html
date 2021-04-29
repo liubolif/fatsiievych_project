@@ -4,7 +4,7 @@
 
     <h4>Cтворити категорію:</h4>
     <br>
-    <form action="{{ url_for('category') }}" method="POST">
+    <form action="{{ url_for('task_bp_in.category') }}" method="POST">
         {{form.csrf_token}}
 
         {{ render_field(form.name) }}
@@ -28,8 +28,8 @@
         {% for categ in all_categories %}
             <tr>
                 <th> <b class="fs-4">{{ categ.name }}</b> </th>
-                <td> <a href="{{url_for('category_update', id=categ.id)}}" class="btn btn-info fs-5"> Змінити </a> </td>
-                <td> <a href="{{url_for('category_delete', id=categ.id)}}" class="btn btn-danger fs-5"> Видалити </a> </td>
+                <td> <a href="{{url_for('task_bp_in.category_update', id=categ.id)}}" class="btn btn-info fs-5"> Змінити </a> </td>
+                <td> <a href="{{url_for('task_bp_in.category_delete', id=categ.id)}}" class="btn btn-danger fs-5"> Видалити </a> </td>
             </tr>
         {% endfor %}
       </tbody>

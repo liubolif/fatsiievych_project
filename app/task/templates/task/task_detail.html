@@ -26,7 +26,7 @@
       <td><b>виконавці:</b></td>
       <td>
         {% for t in task.for_empl %}
-          <a href="{{url_for('employee_profile', id=t.id)}}" class="link-secondary"> {{ t.name }}</a><br>
+          <a href="{{url_for('task_bp_in.employee_profile', id=t.id)}}" class="link-secondary"> {{ t.name }}</a><br>
         {% endfor %}
       </td>
     </tr>
@@ -36,6 +36,6 @@
     </tr>
 
   </table>
-    <a href="{{url_for('task_delete', id=task.id)}}" class="btn btn-danger fs-5"> Видалити </a>
-    <a href="{{url_for('task_update', id=task.id)}}" class="btn btn-info fs-5"> Змінити </a>
+    <a href="{{url_for('task_bp_in.task_delete', id=task.id)}}" class="btn btn-danger fs-5"> Видалити </a>
+    <a href="{{url_for('task_bp_in.task_update', id=task.id)}}" class="btn btn-info fs-5"> Змінити </a>
 {% endblock content %}

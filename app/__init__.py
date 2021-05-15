@@ -5,7 +5,6 @@ from flask_sqlalchemy import SQLAlchemy
 from app.config import Config
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
-
 app = Flask(__name__)
 
 bcrypt = Bcrypt(app)
@@ -33,6 +32,9 @@ def create_app(config_class=Config):
         app.register_blueprint(user_bp, url_prefix='/usr')
         app.register_blueprint(contact_bp, url_prefix='/cnt')
         app.register_blueprint(task_bp, url_prefix='/tsk')
+
+        from .profile import create_module as admin_create_module
+        admin_create_module(app)
 
     return app
 

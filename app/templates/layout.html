@@ -48,6 +48,10 @@
             </div>
             <div class="navbar-nav">
                 {% if current_user.is_authenticated %}
+                    {% if current_user.admin %}
+                        <a class="nav-item nav-link rounded" href="/admin/">Flask Admin</a>
+                        <a class="nav-item nav-link rounded" href="{{ url_for('user_bp_in.home_admin') }}">Admin Page</a>
+                     {% endif %}
                     <a class="nav-item nav-link rounded" href="{{ url_for('user_bp_in.account') }}">My account</a>
                     <a class="nav-item nav-link rounded" href="{{ url_for('user_bp_in.logout') }}">Logout</a>
                 {% else %}

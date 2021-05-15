@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+{% block content %}
+
+   <h4>Список всіх користувачів:</h4>
+    <table class="table table-hover">
+
+      <tbody>
+        <thead>
+            <tr>
+              <th scope="col"> id </th>
+              <th scope="col"> username </th>
+              <th scope="col"> is admin? </th>
+              <th scope="col"> </th>
+              <th scope="col"> </th>
+            </tr>
+         </thead>
+        {% for u in users %}
+        <tr>
+            <td>{{ u.id }}</td>
+            <td>{{ u.username }}</td>
+            <td>{{ u.admin }}</td>
+            <td>
+                <a href="{{url_for('user_bp_in.user_update_admin', id=u.id)}}" class="btn btn-info btn-sm"> Редагувати </a>
+            </td>
+            <td>
+                <a href="{{url_for('user_bp_in.user_delete_admin', id=u.id)}}" class="btn btn-danger btn-sm"> Видалити </a>
+            </td>
+       </tr>
+       {% endfor %}
+
+      </tbody>
+    </table>
+
+{% endblock content %}

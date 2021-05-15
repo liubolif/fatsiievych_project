@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+{% block content %}
+    {% from "_render_field.html" import render_field_lr %}
+    <div class="content-section">
+
+        <form method="POST" action="{{ url_for('user_bp_in.user_create_admin') }}">
+            {{form.csrf_token}}
+
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Create admin</legend>
+                    {{ render_field_lr(form.username) }}
+                    {{ render_field_lr(form.email) }}
+                    {{ render_field_lr(form.password) }}
+                  <div class="form-check">
+                      {{ form.admin(class="form-check-input") }}
+                      {{ form.admin.label(class="form-check-label") }}
+                  </div>
+            </fieldset>
+
+            <div class="form-group">
+                {{ form.submit(class="btn btn-outline-success btn-lg") }}
+            </div>
+
+        </form>
+
+    </div>
+
+{% endblock content %}

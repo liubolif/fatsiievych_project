@@ -99,3 +99,44 @@ class ImageForm(FlaskForm):
 
     picture = FileField('Update Profile Picture', validators=[FileAllowed(['jpg', 'png'])])
     submit = SubmitField('Update')
+
+
+class AdminUserCreateForm(FlaskForm):
+    username = StringField('Username',
+                           validators=[DataRequired(),
+                                       Length(min=4, max=20, message='Username should be from 4 to 20 characters'),
+                                       Regexp('^[A-Za-z][A-Za-z0-9_.]*$', 0,
+                                              'Username should contain only letters, digits, point and underline symbol')
+                                       ]
+                           )
+    email = StringField('Email',
+                        validators=[DataRequired(), Email(message="Wrong email")])
+    password = PasswordField('Password',
+                             validators=[DataRequired(),
+                                         Length(min=5, max=20,
+                                                message='Username should be from 5 to 20 characters')])
+    admin = BooleanField('Is admin')
+    submit = SubmitField('Create admin')
+
+    def validate_username(self, field):
+        if User.query.filter_by(username=field.data).first():
+            raise ValidationError('That username is taken. Please choose a different one.')
+
+    def validate_email(self, field):
+        if User.query.filter_by(email=field.data).first():
+            raise ValidationError('That email is taken. Please choose a different one.')
+
+
+class AdminUserUpdateForm(FlaskForm):
+    username = StringField('Username',
+                           validators=[DataRequired(),
+                                       Length(min=4, max=20, message='Username should be from 4 to 20 characters'),
+                                       Regexp('^[A-Za-z][A-Za-z0-9_.]*$', 0,
+                                              'Username should contain only letters, digits, point and underline symbol')
+                                       ]
+                           )
+    email = StringField('Email',
+                        validators=[DataRequired(), Email(message="Wrong email")])
+    admin = BooleanField('Is admin')
+    submit = SubmitField('Update info')
+

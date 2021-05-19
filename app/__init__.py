@@ -28,10 +28,12 @@ def create_app(config_class=Config):
         from .profile import user_bp
         from .contact import contact_bp
         from .task import task_bp
+        from .api import api_bp
 
         app.register_blueprint(user_bp, url_prefix='/usr')
         app.register_blueprint(contact_bp, url_prefix='/cnt')
         app.register_blueprint(task_bp, url_prefix='/tsk')
+        app.register_blueprint(api_bp, url_prefix='/api')
 
         from .profile import create_module as admin_create_module
         admin_create_module(app)

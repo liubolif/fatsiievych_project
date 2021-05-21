@@ -3,7 +3,7 @@ from functools import wraps
 
 from flask import request, jsonify, make_response
 from app.api import api_bp
-from app.task.models import Task, Category
+from app.task.models import Task, Category, Employee
 from app.profile.models import User
 from app import db, bcrypt
 
@@ -93,7 +93,7 @@ def task_detail(current_user, id):
     task_data['title'] = task.title
     task_data['description'] = task.description
     task_data['created'] = task.created
-    task_data['priority'] = str(task.priority.name)  # ????
+    task_data['priority'] = str(task.priority.name)
     task_data['category'] = task.categor.name
     task_data['is_done'] = task.is_done
     employees = ""
@@ -138,7 +138,7 @@ def task_delete(current_user, id):
     db.session.delete(task)
     db.session.commit()
 
-    return jsonify({'message': 'Task deleted!'}), 200
+    return jsonify({'message': 'Task deleted!'}), 204
 
 
 @api_bp.route('/tasks/<int:id>', methods=["PUT"])

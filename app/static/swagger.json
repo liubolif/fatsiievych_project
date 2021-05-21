@@ -1,0 +1,297 @@
+
+{
+  "openapi": "3.0.0",
+  "info": {
+    "description": "task organizer",
+    "version": "1.0.0",
+    "title": "Flask-Restful-Api-for-Task-",
+    "contact": {
+      "email": "lyubomyrif@gmail.com"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "/"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Task Request",
+      "description": "Example API for requesting and returning task requests"
+    }
+  ],
+  "paths": {
+    "/api/v2/tasks": {
+      "get": {
+        "tags": [
+          "Task Request"
+        ],
+        "summary": "Returns all tasks",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/components/schemas/taskRequests"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Task Request"
+        ],
+        "summary": "Create a new task",
+        "requestBody": {
+          "description": "Task Request Post Object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/taskRequestPostBody"
+              }
+            }
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "201": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            }
+          },
+          "400": {
+            "description": "Failed. Bad post data."
+          }
+        }
+      }
+    },
+    "/api/v2/tasks/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "ID of the task that we want to match",
+          "type": "int"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Task Request"
+        ],
+        "summary": "Get task with given ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Task Request id",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/components/schemas/taskRequest"
+            }
+          },
+          "400": {
+            "description": "Failed. Misunderstood Request."
+          },
+          "404": {
+            "description": "Failed. Task not found."
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a task by given ID",
+        "tags": [
+          "Task Request"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Task Request id",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Task Request Object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/taskRequestPostBodyUpdate"
+              }
+            }
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/components/schemas/taskRequest"
+            }
+          },
+          "400": {
+            "description": "Failed. Bad post data."
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a task by given ID",
+        "tags": [
+          "Task Request"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Book Request Id",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            }
+          },
+          "400": {
+            "description": "Failed. Misunderstood Request."
+          },
+          "404": {
+            "description": "Failed. Book Request not found."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "id": {
+        "properties": {
+          "id": {
+            "type": "integer"
+          }
+        }
+      },
+      "bookRequestPostBody": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "title": {
+            "type": "string",
+            "format": "string"
+          },
+          "description": {
+            "type": "string",
+            "format": "string"
+          },
+           "priority": {
+            "type": "string",
+            "format": "string"
+          },
+           "category_id": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "taskRequestPostBodyUpdate": {
+        "type": "object",
+                "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },"title": {
+            "type": "string",
+            "format": "string"
+          },
+          "description": {
+            "type": "string",
+            "format": "string"
+          },
+           "priority": {
+            "type": "string",
+            "format": "string"
+          },
+           "is_done": {
+            "type": "boolean"
+          },
+           "category_id": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "taskRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "title": {
+            "type": "string",
+            "format": "string"
+          },
+          "description": {
+            "type": "string",
+            "format": "string"
+          },
+           "created": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "priority": {
+            "type": "string",
+            "format": "string"
+          },
+          "is_done": {
+            "type": "boolean"
+          },
+          "category_id": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "taskRequests": {
+        "type": "object",
+        "properties": {
+          "bookRequest": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/taskRequest"
+            }
+          }
+        }
+      }
+    }
+  }
+}

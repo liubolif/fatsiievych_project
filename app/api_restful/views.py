@@ -6,8 +6,8 @@ from app.api_restful import api_restful_bp
 from app.task.models import Task, Category
 from app.profile.models import User
 from app import db, bcrypt
-import flask.scaffold
-flask.helpers._endpoint_from_view_func = flask.scaffold._endpoint_from_view_func
+#import flask.scaffold
+#flask.helpers._endpoint_from_view_func = flask.scaffold._endpoint_from_view_func
 from flask_restful import Api, Resource, reqparse, abort, fields, marshal_with
 
 api = Api(api_restful_bp)

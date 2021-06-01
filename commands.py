@@ -5,12 +5,6 @@ from app import db, app
 from app.profile.models import User
 
 
-@app.cli.command()
-def initdb():
-    """Initialize the database."""
-    click.echo('Init the db')
-
-
 @click.group()
 def cli():
     pass

@@ -2,7 +2,7 @@ import os
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from app.config import Config
+#from app.config import Config
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 app = Flask(__name__)
@@ -15,10 +15,10 @@ login_manager.login_message_category = 'info'
 db = SQLAlchemy(app)
 
 
-def create_app(config_class=Config):
+def create_app(config_filename=None):
     app = Flask(__name__, instance_relative_config=True)
     with app.app_context():
-        app.config.from_object(Config)
+        app.config.from_object('config')
 
         db.init_app(app)
         bcrypt.init_app(app)

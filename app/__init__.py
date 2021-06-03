@@ -15,7 +15,7 @@ login_manager.login_message_category = 'info'
 db = SQLAlchemy(app)
 
 
-def create_app(config_class=Config):
+def create_app(config_filename=None):
     app = Flask(__name__, instance_relative_config=True)
     with app.app_context():
         #app.config.from_object(Config)

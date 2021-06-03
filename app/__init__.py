@@ -2,7 +2,7 @@ import os
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from app.config import Config
+#from app.config import Config
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 app = Flask(__name__)

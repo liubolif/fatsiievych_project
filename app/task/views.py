@@ -13,7 +13,7 @@ def task_all():
     print("task_all")
     all_tasks = Task.query.order_by(case(value=Task.priority, whens={'low': 0, 'medium': 1, 'high': 2}).desc(),
                                     Task.created).all()
-    print(','.join(t.name for t in all_tasks[0].for_empl))
+    #print(','.join(t.name for t in all_tasks[0].for_empl))
     return render_template('task_all.html', title='Завдання', all_tasks=all_tasks)
 
 

@@ -1,14 +1,8 @@
 import click
 from flask.cli import with_appcontext
 
-from app import db, app
+from app import db
 from app.profile.models import User
-
-
-@app.cli.command()
-def initdb():
-    """Initialize the database."""
-    click.echo('Init the db')
 
 
 @click.group()

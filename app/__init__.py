@@ -5,14 +5,14 @@ from flask_sqlalchemy import SQLAlchemy
 from app.config import Config
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
-app = Flask(__name__)
+#app = Flask(__name__)
 
-bcrypt = Bcrypt(app)
-login_manager = LoginManager(app)
+bcrypt = Bcrypt()
+login_manager = LoginManager()
 login_manager.login_view = 'user_bp_in.login'
 login_manager.login_message = "Please, sign in to have an access to the account"
 login_manager.login_message_category = 'info'
-db = SQLAlchemy(app)
+db = SQLAlchemy()
 
 
 def create_app(config_class=Config):

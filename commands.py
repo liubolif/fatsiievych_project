@@ -3,7 +3,7 @@ from flask.cli import with_appcontext
 
 from app import db
 from app.profile.models import User
-
+from app.task.models import Task, Category, Employee
 
 @click.group()
 def cli():

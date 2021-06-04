@@ -19,39 +19,30 @@ class BaseTestCase(TestCase):
         response = self.client.get('/', content_type='html/text')
         self.assertEqual(response.status_code, 200)
         self.assertIn(b'This is a portfolio', response.data)
+        print('-test1_home_page finished')
 
     # 2) перевірка реєстрації, входу і виходу користувача.
     def test2_user(self):
         with self.client:
-            user = User(username='unittester', email='unittester@gmail.com', password='12345')
+            user = User(username='unittester1', email='unittester1@gmail.com', password='12345', admin=True)
             db.session.add(user)
             db.session.commit()
             self.assertIn(
-                db.session.query(User).filter_by(username='unittester').first().email,
-                'unittester@gmail.com'
+                User.query.filter_by(username='unittester1').first().email,
+                'unittester1@gmail.com'
             )
 
-            # register
-            # response = self.client.post(
-            #     '/usr/login',
-            #     data=dict(username='unittester',email="unittester@gmail.com", password="12345"),
-            #     follow_redirects=True
-            # )
+            user1 = User.query.filter(User.email == 'unittester1@gmail.com').first()
+            self.assertEqual(user, user1)
 
-            # login
-            response = self.client.post(
-                '/usr/login',
-                data=dict(email="unittester@gmail.com", password="12345"),
-                follow_redirects=True
-            )
-
-            login_user(User.query.filter(User.email == 'unittester@gmail.com').first())
-
-            # self.assert_redirects(response, '/usr/account')
-            self.assertIn(b'unittester', response.data)
+            login_user(user1)
             self.assertTrue(current_user.is_authenticated)
             logout_user()
             self.assertFalse(current_user.is_authenticated)
+
+            db.session.delete(user)
+            db.session.commit()
+            print('-test2_user finished')
 
     # 3) покрити тестами операції CRUD для моделі Task (API з Flask-SQLalchemy)
     def test31_task_create(self):
@@ -61,43 +52,70 @@ class BaseTestCase(TestCase):
             follow_redirects=True
         )
         self.assertEqual(response.status_code, 201)
-        self.assertIn(b'test_task', response.data)
+        data_json = response.json
+        del data_json['created']
+        self.assertEqual(data_json, dict(id=6, title="test_task", description="test_description",
+                                         priority="EnumPriority.low", category=None, is_done=False))
+
+        # unsuccessful request
+        response2 = self.client.post(
+            '/api/v2/tasks',
+            data=dict(title=110, description="jdfjlkdsfjsdf", priority="super", category_id=1),
+            follow_redirects=True
+        )
+        self.assertEqual(response2.status_code, 400)
+        print('-test31_task_create finished')
 
     def test32_task_all(self):
         response = self.client.get(
             '/api/v2/tasks',
             follow_redirects=True
         )
+        self.assertEqual(response.status_code, 200)
         self.assertIn(b'test_task', response.data)
+        print('-test32_task_all finished')
 
     def test33_task_detail(self):
         response = self.client.get(
-            '/api/v2/tasks/1',
+            '/api/v2/tasks/6',
             follow_redirects=True
         )
-        self.assertEqual(response.json, dict(resource=dict(id=1, title="test_task", description="test_description",
-                                                           priority="EnumPriority.low", is_done=False)))
 
-'''
+        data_json = response.json
+        del data_json['created']
+        self.assertEqual(data_json, dict(id=6, title="test_task", description="test_description",
+                                         priority="EnumPriority.low", category=None, is_done=False))
+
+        response2 = self.client.get(
+            '/api/v2/tasks/666',
+            follow_redirects=True
+        )
+        self.assertEqual(response2.status_code, 404)
+        print('-test33_task_detail finished')
+
     def test34_task_update(self):
         response = self.client.put(
-            '/api/v2/tasks/86',
+            '/api/v2/tasks/6',
             data=dict(title="updated_test_task", description="updated_test_description",
                       priority="high", category_id=1, is_done=True),
             follow_redirects=True
         )
-        self.assertEqual(response.json, dict(resource=dict(id=1, title="updated_test_task", description="updated_test_description",
-                                                           priority="EnumPriority.high", is_done=True)))
+        self.assertEqual(response.status_code, 201)
+        data_json = response.json
+        del data_json['created']
+        self.assertEqual(data_json, dict(id=6, title="updated_test_task", description="updated_test_description",
+                                         priority="EnumPriority.high", category=None, is_done=True))
+        print('-test34_task_update finished')
 
     def test35_task_delete(self):
         response = self.client.delete(
-            '/api/v2/tasks/86',
-            # data=dict(id=86),
+            '/api/v2/tasks/6',
             follow_redirects=True
         )
-        self.assertNotIn(b'test_task', response.data)
+        self.assertEqual(response.status_code, 204)
         self.assertNotIn(b'updated_test_task', response.data)
-'''
+        print('-test35_task_delete finished')
+
 
 if __name__ == "__main__":
     unittest.main()

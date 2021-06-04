@@ -6,8 +6,8 @@ from app.api_restful import api_restful_bp
 from app.task.models import Task, Category
 from app.profile.models import User
 from app import db, bcrypt
-# import flask.scaffold
-# flask.helpers._endpoint_from_view_func = flask.scaffold._endpoint_from_view_func
+import flask.scaffold
+flask.helpers._endpoint_from_view_func = flask.scaffold._endpoint_from_view_func
 from flask_restful import Api, Resource, reqparse, abort, fields, marshal_with
 
 api = Api(api_restful_bp)
@@ -49,6 +49,7 @@ class AllTasks(Resource):
     def post(self):
         args = task_create_args.parse_args()
         try:
+            #category_obj = Category.query.get_or_404(args['category_id'])
             task = Task(title=args['title'], description=args['description'], priority=args['priority'],
                         category_id=args['category_id'])
             # for e in data['employee']:

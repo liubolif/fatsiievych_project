@@ -27,6 +27,7 @@
       <tbody>
         {% for categ in all_categories %}
             <tr>
+                <th> <b class="fs-4">{{ categ.id }}</b> </th>
                 <th> <b class="fs-4">{{ categ.name }}</b> </th>
                 <td> <a href="{{url_for('task_bp_in.category_update', id=categ.id)}}" class="btn btn-info fs-5"> Змінити </a> </td>
                 <td> <a href="{{url_for('task_bp_in.category_delete', id=categ.id)}}" class="btn btn-danger fs-5"> Видалити </a> </td>

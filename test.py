@@ -37,9 +37,9 @@ class BaseTestCase(TestCase):
 
             login_user(user1)
             self.assertTrue(current_user.is_authenticated)
+            self.assertTrue(current_user.username == 'unittester1')
             logout_user()
             self.assertFalse(current_user.is_authenticated)
-
             db.session.delete(user)
             db.session.commit()
             print('-test2_user finished')

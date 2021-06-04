@@ -5,7 +5,8 @@ from flask_sqlalchemy import SQLAlchemy
 from app.config import Config
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
-#app = Flask(__name__)
+
+# app = Flask(__name__)
 
 bcrypt = Bcrypt()
 login_manager = LoginManager()
@@ -18,8 +19,12 @@ db = SQLAlchemy()
 def create_app(config_class=Config):
     app = Flask(__name__, instance_relative_config=True)
     with app.app_context():
-        app.config.from_object(Config)
-        #app.config.from_object('config')
+        # app.config.from_object(Config)
+        if os.environ.get('DATABASE_URL') is None:
+            app.config.update(SQLALCHEMY_DATABASE_URI='sqlite:///testing.db', SECRET_KEY='supersecretkey')
+        else:
+            app.config.from_object(Config)
+
         db.init_app(app)
         bcrypt.init_app(app)
         login_manager.init_app(app)
@@ -43,8 +48,3 @@ def create_app(config_class=Config):
         admin_create_module(app)
 
     return app
-
-
-
-
-

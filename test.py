@@ -1,79 +1,103 @@
-from urllib.request import urlopen
-
-from app import app, db, Student
+from app import create_app, db
+from app.profile.models import User
+from app.task.models import Task
 from flask_testing import TestCase
 import unittest
+from datetime import datetime
+from flask_login import login_user, current_user, logout_user
 
 
 class BaseTestCase(TestCase):
     def create_app(self):
-        # let's use SQLite3 as it is much faster to test with than a larger postgres DB
-        # app.config.from_object('config.TestConfiguration')
-        app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///testing.db'
+        # app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///testing.db'
+        app = create_app()
+        app.config.update(SQLALCHEMY_DATABASE_URI='sqlite:///testing.db', SECRET_KEY='asfdsfsaaffdf')
         return app
 
-    def setUp(self):
-        db.create_all()
-        person1 = Student("Elie", "Schoppik")
-        person2 = Student("Tim", "Garcia")
-        person3 = Student("Matt", "Lane")
-        db.session.add_all([person1, person2, person3])
-        db.session.commit()
-
-    def tearDown(self):
-        db.drop_all()
-
-    def test_setup(self):
-        self.assertTrue(self.app is not None)
-        self.assertTrue(self.client is not None)
-        self.assertTrue(self._ctx is not None)
-
-    def test_index(self):
-        response = self.client.get('/students', content_type='html/text')
+    # 1) перевірка відображення головної сторінки
+    def test1_home_page(self):
+        response = self.client.get('/', content_type='html/text')
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b'Elie Schoppik', response.data)
-        self.assertIn(b'Tim Garcia', response.data)
-        self.assertIn(b'Matt Lane', response.data)
+        self.assertIn(b'This is a portfolio', response.data)
 
+    # 2) перевірка реєстрації, входу і виходу користувача.
+    def test2_user(self):
+        with self.client:
+            user = User(username='unittester', email='unittester@gmail.com', password='12345')
+            db.session.add(user)
+            db.session.commit()
+            self.assertIn(
+                db.session.query(User).filter_by(username='unittester').first().email,
+                'unittester@gmail.com'
+            )
 
-'''
+            # register
+            # response = self.client.post(
+            #     '/usr/login',
+            #     data=dict(username='unittester',email="unittester@gmail.com", password="12345"),
+            #     follow_redirects=True
+            # )
 
+            # login
+            response = self.client.post(
+                '/usr/login',
+                data=dict(email="unittester@gmail.com", password="12345"),
+                follow_redirects=True
+            )
 
-    def test_show(self):
-        response = self.client.get('/students/1')
-        self.assertEqual(response.status_code, 200)
+            login_user(User.query.filter(User.email == 'unittester@gmail.com').first())
 
-    def test_create(self):
+            # self.assert_redirects(response, '/usr/account')
+            self.assertIn(b'unittester', response.data)
+            self.assertTrue(current_user.is_authenticated)
+            logout_user()
+            self.assertFalse(current_user.is_authenticated)
+
+    # 3) покрити тестами операції CRUD для моделі Task (API з Flask-SQLalchemy)
+    def test31_task_create(self):
         response = self.client.post(
-            '/students',
-            data=dict(first_name="New", last_name="Student"),
+            '/api/v2/tasks',
+            data=dict(title="test_task", description="test_description", priority="low", category_id=1),
             follow_redirects=True
         )
-        self.assertIn(b'New Student', response.data)
+        self.assertEqual(response.status_code, 201)
+        self.assertIn(b'test_task', response.data)
 
-    def test_edit(self):
+    def test32_task_all(self):
         response = self.client.get(
-            '/students/1/edit'
-        )
-        self.assertIn(b'Elie', response.data)
-        self.assertIn(b'Schoppik', response.data)
-
-    def test_update(self):
-        response = self.client.patch(
-            '/students/1',
-            data=dict(first_name="updated", last_name="information"),
+            '/api/v2/tasks',
             follow_redirects=True
         )
-        self.assertIn(b'updated information', response.data)
-        self.assertNotIn(b'Elie Schoppik', response.data)
+        self.assertIn(b'test_task', response.data)
 
-    def test_delete(self):
+    def test33_task_detail(self):
+        response = self.client.get(
+            '/api/v2/tasks/1',
+            follow_redirects=True
+        )
+        self.assertEqual(response.json, dict(resource=dict(id=1, title="test_task", description="test_description",
+                                                           priority="EnumPriority.low", is_done=False)))
+
+'''
+    def test34_task_update(self):
+        response = self.client.put(
+            '/api/v2/tasks/86',
+            data=dict(title="updated_test_task", description="updated_test_description",
+                      priority="high", category_id=1, is_done=True),
+            follow_redirects=True
+        )
+        self.assertEqual(response.json, dict(resource=dict(id=1, title="updated_test_task", description="updated_test_description",
+                                                           priority="EnumPriority.high", is_done=True)))
+
+    def test35_task_delete(self):
         response = self.client.delete(
-            '/students/1',
+            '/api/v2/tasks/86',
+            # data=dict(id=86),
             follow_redirects=True
         )
-        self.assertNotIn(b'Elie Schoppik', response.data)
+        self.assertNotIn(b'test_task', response.data)
+        self.assertNotIn(b'updated_test_task', response.data)
 '''
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
